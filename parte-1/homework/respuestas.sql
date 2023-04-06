@@ -55,35 +55,41 @@ where ol.fecha between '2022-10-01' and '2022-11-10'
 
 
 
-
 /*
-
-
-
-Aca Edito para mostrar cambios
-
-
-
-
-
-
-
-
-
-
 Clase 2
 Respuestas:
 */
 
 
-/*
 -- 1 Cuales son los paises donde la empresa tiene tiendas?
+ select distinct sm.pais from store_master sm
+
 -- 2 Cuantos productos por subcategoria tiene disponible para la venta?
+
+select subcategoria, count(*) from product_master pm
+where pm.is_active=1
+group by subcategoria
+
 -- 3 Cuales son las ordenes de venta de Argentina de mayor a $100.000?
--- 4 Obtener los decuentos otorgados durante Noviembre de 2022 en cada una de las monedas?
+
+select * from order_line_sale o
+where o.venta>100000 and moneda='ARS'
+
+-- 4 Obtener los descuentos otorgados durante Noviembre de 2022 en cada una de las monedas?
+select moneda, sum(descuento) from order_line_sale o
+where o.fecha between '20221101' and '20221201'
+group by moneda
+
 -- 5 Obtener los impuestos pagados en Europa durante el 2022.
+select moneda, sum(o.impuestos) from order_line_sale o
+where year(o.fecha)=2022 and o.moneda='EUR'
+group by moneda
+
 -- 6 En cuantas ordenes se utilizaron creditos?
+select count(*) from order_line_sale o 
+where o.creditos is not null
 -- 7 Cual es el % de descuentos otorgados (sobre las ventas) por tienda?
+select * from 
 -- 8 Cual es el inventario promedio por dia que tiene cada tienda?
 -- 9 Obtener las ventas netas y el porcentaje de descuento otorgado por producto en Argentina.
 -- 10 Las tablas "market_count" y "super_store_count" representan dos sistemas distintos que usa la empresa para 
@@ -94,7 +100,7 @@ Respuestas:
 -- 13 Cual es el precio promedio de venta de cada producto en las distintas monedas? Recorda que los valores de venta, impuesto, 
 -- descuentos y creditos es por el total de la linea.
 -- 14 Cual es la tasa de impuestos que se pago por cada orden de venta?
-*/
+
 
 /*
 Clase 3
@@ -105,6 +111,11 @@ Respuestas:
 /*
 -- 1 Mostrar nombre y codigo de producto, categoria y color para todos los productos de la marca Philips y Samsung, 
 -- mostrando la leyenda "Unknown" cuando no hay un color disponible
+select codigo_producto, nombre, case when color is null then 'Unknown' else color end as color2 
+from stg.product_master where nombre like ('%PHILIPS%') or nombre like ('%Samsung%')
+
+CASE WHEN material IS NULL THEN 'Unknown' when material = 'PLASTICO' THEN 'Plastico' when material = 'plastico' THEN 'Plastico' 
+ELSE material END as material_consolidado
 -- 2 Calcular las ventas brutas y los impuestos pagados por pais y provincia en la moneda correspondiente.
 -- 3 Calcular las ventas totales por subcategoria de producto para cada moneda ordenados por subcategoria y moneda.
 -- 4 Calcular las unidades vendidas por subcategoria de producto y la concatenacion de pais, provincia; usar guion como separador y usarla para ordernar el resultado.
@@ -138,5 +149,4 @@ Respuestas:
 -- 12 Fernando Moralez, 2022-04-04, España, Valencia, tienda 9, Vendedor.
 -- 13 Crear un backup de la tabla "cost" agregandole una columna que se llame "last_updated_ts" que sea el momento exacto en el cual estemos realizando el backup en formato datetime.
 -- 14 El cambio en la tabla "order_line_sale" en el punto 6 fue un error y debemos volver la tabla a su estado original, como lo harias?
-
 */
